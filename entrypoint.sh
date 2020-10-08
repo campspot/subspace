@@ -145,19 +145,31 @@ ip addr add ${SUBSPACE_IPV6_GW}/${SUBSPACE_IPV6_CIDR} dev wg0
 wg setconf wg0 /data/wireguard/server.conf
 ip link set wg0 up
 
+<<<<<<< HEAD
 # dnsmasq service
 if ! test -d /etc/service/dnsmasq; then
   cat <<DNSMASQ >/etc/dnsmasq.conf
     # Only listen on necessary addresses.
     listen-address=127.0.0.1,${SUBSPACE_IPV4_GW},${SUBSPACE_IPV6_GW}
+=======
 
-    # Never forward plain names (without a dot or domain part)
-    domain-needed
+if [ -z "${SUBSPACE_DNSMASQ_DISABLED-}" ] ; then
+>>>>>>> 592c439efecf9d490ead41ddf96b361266288a12
 
-    # Never forward addresses in the non-routed address spaces.
-    bogus-priv
+    # dnsmasq service
+    if ! test -d /etc/sv/dnsmasq ; then
+        cat <<DNSMASQ >/etc/dnsmasq.conf
+        # Only listen on necessary addresses.
+        listen-address=127.0.0.1,${SUBSPACE_IPV4_GW},${SUBSPACE_IPV6_GW}
+
+        # Never forward plain names (without a dot or domain part)
+        domain-needed
+
+        # Never forward addresses in the non-routed address spaces.
+        bogus-priv
 DNSMASQ
 
+<<<<<<< HEAD
   mkdir -p /etc/service/dnsmasq
   cat <<RUNIT >/etc/service/dnsmasq/run
 #!/bin/sh
@@ -172,6 +184,26 @@ RUNIT
 exec svlogd -tt ./main
 RUNIT
   chmod +x /etc/service/dnsmasq/log/run
+=======
+        mkdir /etc/sv/dnsmasq
+        cat <<RUNIT >/etc/sv/dnsmasq/run
+    #!/bin/sh
+    exec /usr/sbin/dnsmasq --no-daemon
+RUNIT
+        chmod +x /etc/sv/dnsmasq/run
+
+    # dnsmasq service log
+        mkdir /etc/sv/dnsmasq/log
+        mkdir /etc/sv/dnsmasq/log/main
+        cat <<RUNIT >/etc/sv/dnsmasq/log/run
+    #!/bin/sh
+    exec svlogd -tt ./main
+RUNIT
+        chmod +x /etc/sv/dnsmasq/log/run
+        ln -s /etc/sv/dnsmasq /etc/service/dnsmasq
+    fi
+
+>>>>>>> 592c439efecf9d490ead41ddf96b361266288a12
 fi
 
 # subspace service
