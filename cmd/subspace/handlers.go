@@ -439,6 +439,7 @@ WGCLIENT
 		IPv6Pref     string
 		IPv4Cidr     string
 		IPv6Cidr     string
+		IPv4Dns      string
 		Listenport   string
 		AllowedIPS   string
 	}{
@@ -451,6 +452,7 @@ WGCLIENT
 		ipv6Pref,
 		ipv4Cidr,
 		ipv6Cidr,
+		ipv4Dns,
 		listenport,
 		allowedips,
 	})
