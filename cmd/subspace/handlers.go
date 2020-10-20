@@ -386,6 +386,10 @@ func profileAddHandler(w *Web) {
 	if cidr := getEnv("SUBSPACE_IPV6_CIDR", "nil"); cidr != "nil" {
 		ipv6Cidr = cidr
 	}
+	ipv4Dns := "8.8.8.8"
+	if dns := getEnv("SUBSPACE_NAMESERVER", "nil"); dns != "nil" {
+	    ipv4Dns = dns
+	}
 	listenport := "51820"
 	if port := getEnv("SUBSPACE_LISTENPORT", "nil"); port != "nil" {
 		listenport = port
@@ -415,7 +419,7 @@ WGPEER
 cat <<WGCLIENT >clients/{{$.Profile.ID}}.conf
 [Interface]
 PrivateKey = ${wg_private_key}
-DNS = {{$.IPv4Gw}}, {{$.IPv6Gw}}
+DNS = {{$.IPv4Gw}}, {{$.IPv6Gw}}, {{$.IPv4Dns}
 Address = {{$.IPv4Pref}}{{$.Profile.Number}}/{{$.IPv4Cidr}},{{$.IPv6Pref}}{{$.Profile.Number}}/{{$.IPv6Cidr}}
 
 [Peer]
