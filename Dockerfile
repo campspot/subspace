@@ -21,14 +21,6 @@ RUN make build BUILD_VERSION=${BUILD_VERSION}
 FROM alpine:3.11.6
 LABEL maintainer="github.com/subspacecommunity/subspace"
 
-COPY --from=build  /src/subspace /usr/bin/subspace
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-COPY bin/my_init /sbin/my_init
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN chmod +x /usr/bin/subspace /usr/local/bin/entrypoint.sh /sbin/my_init
-
 RUN apk add --no-cache \
     iproute2 \
     iptables \
@@ -37,6 +29,14 @@ RUN apk add --no-cache \
     socat  \
     wireguard-tools \
     runit
+
+COPY --from=build  /src/subspace /usr/bin/subspace
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY bin/my_init /sbin/my_init
+
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN chmod +x /usr/bin/subspace /usr/local/bin/entrypoint.sh /sbin/my_init
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh" ]
 
